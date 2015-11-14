@@ -6,4 +6,5 @@ public class AccelaratorClass {
     protected int func3(){
     	return 0;
     }
+	private void getAccelarator(){}
 }
