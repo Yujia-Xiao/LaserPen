@@ -1,6 +1,6 @@
 package edu.osu.laserpen;
 
-public class AccelaratorClass {
+public class AcceleratorClass {
     protected void func(){}
     public void func2(){}
     protected int func3(){
