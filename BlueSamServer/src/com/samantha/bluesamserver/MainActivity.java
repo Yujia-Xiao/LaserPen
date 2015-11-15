@@ -55,6 +55,8 @@ public class MainActivity extends Activity {
 	private BluetoothSocket FianlSocket=null;
     private HandlerThread handlerThread = null;
     private UIHandler transHandler = null;
+    private String TestUI = null;
+    private Handler mainUIhandler = null;
 	
     
 	@Override
@@ -100,7 +102,15 @@ public class MainActivity extends Activity {
 		//get the UUID for connection 
 		MY_UUID=UUID.fromString("d22f30b8-2716-41d2-84f2-4cd56bb75ecc");//this is used to make sure the connection.
         
-		
+		mainUIhandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                String change = (String)msg.obj;
+                receivedMsg.setText(change);
+
+            }
+        };
 		
 	}
 	
@@ -143,7 +153,7 @@ public class MainActivity extends Activity {
 				Log.d("devices", device.getAddress());
 				String address = "F8:F1:B6:F8:F9:7A";
 				address = "5C:2E:59:BA:5F:D6";
-				address = "E0:75:7D:19:CE:A6";
+				//address = "E0:75:7D:19:CE:A6";
 				if(device.getAddress().equals(address)){
 					Log.d(TAG, "Get the Bluetooth Device");
 					Toast.makeText(MainActivity.this, "detected:"+device.getAddress(), Toast.LENGTH_LONG).show();
@@ -291,14 +301,19 @@ public class MainActivity extends Activity {
 	               decoded=decoded.substring(0, bytes);	
 	               Toast.makeText(MainActivity.this, "decoded: "+decoded, Toast.LENGTH_LONG).show();
 	               
-	               decodedmsg.obj=decoded;
-	               transHandler.sendMessage(decodedmsg);
+	               //decodedmsg.obj=decoded;
+	               //transHandler.sendMessage(decodedmsg);
+	               Message message = Message.obtain();
+                   message.obj = decoded;
+                   mainUIhandler.sendMessage(message);
+	              
 	               
 	               Log.d(TAG, "33333"+decoded);
 	    	       //uimsg.obj=decoded;
 	    	       Log.d(TAG, "44444");
 	    	       //uiHandler.sendMessage(uimsg);
 	    	       Log.d(TAG, "55555");
+	    	       //buffer=null;
 	    	       
 	               System.out.println("current--connectedThread-construct-run-after-try>"+Thread.currentThread().getName());
 	            } catch (IOException e) {
@@ -323,7 +338,7 @@ public class MainActivity extends Activity {
 	    }
 	}
 	
-	class UIHandler extends Handler {
+	public class UIHandler extends Handler {
 		
 		public UIHandler(){}
 		public UIHandler(Looper looper){
@@ -339,14 +354,15 @@ public class MainActivity extends Activity {
 			final String RecievedMeg = (String)msgg.obj;
 			Log.d(TAG, "UIHandler-before2222");
 			
-			MainActivity.this.runOnUiThread(new Runnable() {
+			/*MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                 	receivedMsg.setText(RecievedMeg);
                 }
-            });
+            });*/
 			
 			//receivedMsg.setText("Received Msg is: "+RecievedMeg);
+			TestUI=RecievedMeg;
 			
 			Log.d(TAG, "UIHandler-before333"+RecievedMeg);
 		}
