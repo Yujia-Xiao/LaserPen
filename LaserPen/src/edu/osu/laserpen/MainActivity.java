@@ -1,8 +1,14 @@
 package edu.osu.laserpen;
-
+import android.R.string;
 import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +19,7 @@ import android.widget.Toast;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import android.view.MotionEvent;
 
 public class MainActivity extends Activity {
@@ -22,7 +29,10 @@ public class MainActivity extends Activity {
 	float dx=0;
 	float vx=0;
 	
-    private GestureDetector gestureDetector;
+    private SensorManager sensorMgr;
+	private TextView msg;
+	
+	private GestureDetector gestureDetector;
     private String[] colors = new String[]{"Red","Blue","Yellow","Green","Orange"};
     private boolean[] areaState = new boolean[]{true,false,false,false,false};
     ImageButton mybtn;
@@ -34,7 +44,11 @@ public class MainActivity extends Activity {
     	requestWindowFeature(Window.FEATURE_NO_TITLE); 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); 
-        
+        sensorMgr = (SensorManager)getSystemService(SENSOR_SERVICE);
+		msg=(TextView)findViewById(R.id.msg);
+		msg.setText("initialization");
+
+		
         final TextView comment1 = (TextView) this.findViewById(R.id.textView2);
         mybtn = (ImageButton) this.findViewById(R.id.imageButton1);
         btnClear = (ImageButton) this.findViewById(R.id.imageButton2);
@@ -66,14 +80,63 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//send("clear");
-				Toast.makeText(getApplicationContext(), "CLEAR CLICKED", Toast.LENGTH_SHORT).show();				
-			};
-        });
+				Toast.makeText(getApplicationContext(), "CLEAR CLICKED", Toast.LENGTH_SHORT).show();							}        });
         
         btnColor.setOnClickListener(new AlertClickListener());
         
         gestureDetector = new GestureDetector(MainActivity.this,onGestureListener);
     }
+    
+    
+	SensorEventListener listener = new SensorEventListener(){
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			// TODO Auto-generated method stub
+			Sensor sensor = event.sensor;
+			StringBuilder sensorInfo = new StringBuilder();
+			sensorInfo.append("sensor name: " + sensor.getName() + "\n");
+			sensorInfo.append("sensor type: " + sensor.getType() + "\n");
+			sensorInfo.append("used power: " + sensor.getPower() + "mA\n");
+			sensorInfo.append("value: \n");
+			float[] values = event.values;
+			for (int i = 0; i< values.length; i++)
+				sensorInfo.append("-values[" + i + "] = " + values[i] + "\n");
+			msg.setText(sensorInfo);
+			
+		}
+		
+		public String Encode(SensorEvent event){
+			float[] values = event.values;
+			String BtInfo = "MoveP" + Float.toString(values[0]).substring(0,5) + Float.toString(values[1]).substring(0,5);		
+			return BtInfo;
+		}
+		public float[] Decode(String BtInfo){
+			float[] accl = new float[2];
+			accl[0] = Float.parseFloat(BtInfo.substring(5,10));
+			accl[1] = Float.parseFloat(BtInfo.substring(10,15));
+			return accl;
+		}
+   
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		sensorMgr.registerListener(listener, 
+				sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_UI);
+	}
+	@Override
+	protected void onPause(){
+		super.onPause();
+		sensorMgr.unregisterListener(listener);
+	}
         
     // judge the distance of a swipe
     private GestureDetector.OnGestureListener onGestureListener =   

@@ -58,4 +58,13 @@
         android:layout_marginLeft="22dp"
         android:background="@drawable/colorfinalicon" />
 
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageButton2"
+        android:layout_marginTop="27dp"
+        android:layout_toLeftOf="@+id/imageButton2"
+        android:text="@string/hello_world" />
+
 </RelativeLayout>
