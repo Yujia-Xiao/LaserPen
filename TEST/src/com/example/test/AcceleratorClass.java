@@ -9,6 +9,11 @@ import android.view.View;
 public class AcceleratorClass extends View{
 	public float currentX = 40;
 	public float currentY = 50;
+	public float length = 10;
+    public float speed = 20;
+    public float len = 0;
+    public float stopPointx = 0;
+    public float f = 0;
 
 	public AcceleratorClass(Context context) {
 		super(context);
@@ -21,8 +26,14 @@ public class AcceleratorClass extends View{
 		
 		Paint point = new Paint();
 		point.setColor(Color.RED);
-		
-		canvas.drawCircle(currentX, currentY, 15, point);
+		if(f == 0){
+		     canvas.drawCircle(currentX, currentY, 15, point);
+	    }else{
+	    	len = length*speed;
+			stopPointx = currentX + len;
+			canvas.drawLine(currentX, currentY, stopPointx, currentY, point);
+			
+	    }
 	}
 	
 }
