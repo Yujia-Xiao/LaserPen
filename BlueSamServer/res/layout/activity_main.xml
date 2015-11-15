@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+    >
+
+    <TextView
+        android:id="@+id/ShowingSearchingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Searching for BLuetooth Device..." 
+        />
+    <TextView 
+        android:id="@+id/SearchedBluetoothDevice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="No results."
+        />"
+    
+    <Button 
+        android:id="@+id/exposeMeButtonId"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="set visiblity"/>
+   
+    <Button 
+        android:id="@+id/scanAroundButtonId"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="scan nearby Bluetooth device"
+        />
+        
+    <TextView
+        android:id="@+id/myDeviceAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Bluetooth is:" 
+        />
+    
+    <TextView 
+        android:id="@+id/myConnectedDevice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Connected Bluetooth is:"
+        />
+    
+    <TextView 
+        android:id="@+id/recievedMeg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="received msg is:"
+        />    
+
+</LinearLayout>
