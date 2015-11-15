@@ -23,8 +23,10 @@ public class MainActivity extends Activity {
 
 	private float ax;
 	private float ay;
-	private float a0;//
-	private float ssta;//sensitivity of accl
+	private float ax0;//
+	private float ay0;//
+	private float sstax;//sensitivity of accl
+	private float sstay;//sensitivity of accl
 	private float vx;
 	private float vy;
 	private float sstv;//sensitivity of velocity
@@ -63,10 +65,12 @@ public class MainActivity extends Activity {
     	//initial
     	y = height/2;
     	x = width/2;
-    	a0 = 1;  	
+    	ax0 = 0;
+    	ay0 = 0;
     	ax = 0;
     	ay = 0;
-    	ssta = 1;
+    	sstax = 10;
+    	sstay = 20;
     	vx = 0;
     	vy = 0;
     	sstv = 1;
@@ -91,8 +95,8 @@ public class MainActivity extends Activity {
 			sensorInfo.append("used power: " + sensor.getPower() + "mA\n");
 			sensorInfo.append("value: \n");
 			float[] values = event.values;
-			ax = -values[0];//acc
-			ay = values[1];//acc
+			ax = values[0];//acc
+			ay = -values[1];//acc
 			for (int i = 0; i< values.length; i++)
 				sensorInfo.append("-values[" + i + "] = " + values[i] + "\n");
 			msg.setText(sensorInfo);	
@@ -106,7 +110,7 @@ public class MainActivity extends Activity {
 	protected void onResume(){
 		super.onResume();
 		sensorMgr.registerListener(listener, 
-				sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				sensorMgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
 				SensorManager.SENSOR_DELAY_UI);
 	}
 	@Override
@@ -125,7 +129,7 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			while(!Thread.currentThread().isInterrupted()){
 				try{
-					Thread.sleep(100);
+					Thread.sleep(50);
 				}catch(InterruptedException e){
 					e.printStackTrace();
 				}
@@ -140,28 +144,34 @@ public class MainActivity extends Activity {
     }
     
     private void updatePosition(){
-    	
-    	vx = vx + ax * ssta;
-    	vy = vy + ay * ssta;
+    	if ((ax*ax)>=(ax0*ax0) && (ay*ay)>=(ay0*ay0)){
+    	vx = vx + ax * sstax;
+    	vy = vy + ay * sstay;
     	x = x + vx * sstv;
     	y = y + vy * sstv;
     	if( x >= width){
-    		x = 1;
+    		x = width*9/10 ;
     		vx = 0;
     	}
-    	if(x <= 0){
-    		x = width - 1;
+    	if(x <= 0){ 
+    		x = width/10;
     		vx = 0;
     	}
     	if( y >= height){
-    		y = 1;
+    		y = height*9/10 ;
     		vy = 0;
     	}
     	if( y <= 0){
-    		y = height -1;
+    		y = height/10;
     		vy = 0;
     	}
-    	
+    	if( ax <= 0.3 && ax >= -0.3)
+    	{	vx = 0; }
+    	if( ay <= 0.3 && ay >= -0.3)
+    	{	vy = 0; }
+    	}
+    	ax0 = ax;
+    	ay0 = ay;
    /* 	if(fx == false){
     		x = x+10;
     		if(x >= width){
